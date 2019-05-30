@@ -148,8 +148,34 @@ d3.csv('/assets/data/data.csv')
             .attr('cx', d => xScale(parseFloat(d['poverty'])))
             // .attr('cy', d => d['healthcare'])
             .attr('cy', d => yScale(d['healthcare']))
-            .attr('r', 10)
+            .attr('r', 8)
             .classed('moreInfo', true)
-        // .attr('fill', d => [d['abbr']]);
+            // .attr('fill', d => [d['abbr']]);
+            .attr('fill', 'green')
+
+            // const toolTip = d3.select('body').append('div')
+            // .attr('class', 'tooltip');
+        
+            circleGroup.on('mouseover', function(){
+                d3.select(this)
+                .transition()
+                .duration(300) 
+                .attr('r', 10)
+                .attr('fill', 'orange')
+                .attr('text', d => d['abbr'])
+
+            })
+
+            circleGroup.on('mouseout', function(){
+                d3.select(this)
+                .transition()
+                .attr('r', 8)
+                .attr('fill', 'green')
+
+            })
+
+           
+               
+             
 
     })
