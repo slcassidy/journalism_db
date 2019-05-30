@@ -4,6 +4,8 @@
 const height = 600;
 const width = 1000;
 let XAxis = 'poverty'
+// let test = parseFloat(d[XAxis])
+
 
 // max with and max height
 
@@ -37,7 +39,7 @@ svg.append('g')
     .append('text')
     .attr('x', 0)
     .attr('y', 0)
-    .attr('value','healthcare')
+    .attr('value', 'healthcare')
     .text('Healthcare');
 
 
@@ -81,21 +83,46 @@ function UpdateBars(circleGroup, newXScale) {
     return;
 }
 
+
 d3.csv('/assets/data/data.csv')
     .then(function (health_poverty_data) {
         console.log(health_poverty_data)
+     // Testing to see if there is a string vs integer
+        let ymin = d3.min(health_poverty_data.map(d => parseFloat(d['healthcare'])));
+        let ymax = d3.max(health_poverty_data.map(d => parseFloat(d['healthcare'])));
 
-    let maxie = d3.max(health_poverty_data, (d => d['healthcare']))
-    console.log(`max info ${maxie}`)
+        console.log(`YAxis max info ${ymax}`)
+        console.log(typeof (ymax));
+        console.log(`YAxis min info ${ymin}`)
+        console.log(typeof (ymin));
+
+        // Testing to see if there is a string vs integer
+        // let maxie = d3.max(health_poverty_data, (d => d['healthcare']))
+        // console.log(`YAxis max info ${maxie}`)
+        // console.log(typeof (maxie));
+        // let maxie2 = parseFloat(d3.max(health_poverty_data, (d => d['healthcare'])))
+        // console.log(`max float info ${maxie2}`)
+        // console.log(typeof (maxie2)); //End test
+
 
         const yScale = d3.scaleLinear()
-            .domain([0, d3.max(health_poverty_data, (d => d['healthcare']))])
+            // .domain([0, d3.max(health_poverty_data.map(d => parseFloat(d['healthcare'])))])
+            // .domain([ymin, ymax])
+            .domain([ymin, ymax])
             .range([chartHeight, 0]);
-    
-            let maxx = d3.max(health_poverty_data, d => d[XAxis])
-            console.log(maxx)
+
+        // Testing to see if there is a string vs integer
+        let maxx = d3.max(health_poverty_data, d => d[XAxis])
+        console.log(`XAxis max${maxx}`)
+        console.log(typeof (maxx));
+
+        let maxx2 = parseFloat(d3.max(health_poverty_data, d => d[XAxis]))
+        console.log(`XAxis max${maxx}`)
+        console.log(typeof (maxx2)); //End test
+        
 
         const xScale = d3.scaleLinear()
+            // .domain([0, d3.max(health_poverty_data, d => parseFloat(d[XAxis]))])
             .domain([0, d3.max(health_poverty_data, d => d[XAxis])])
             .range([0, chartWidth])
 
@@ -114,18 +141,23 @@ d3.csv('/assets/data/data.csv')
             .attr('id', 'yaxis')
             .call(yAxis_func);
 
-let checkP = health_poverty_data[0].poverty
-console.log(checkP)
+        let checkP = health_poverty_data[0].poverty
+        console.log(checkP)
+        console.log(typeof(checkP))
+        let checkX = d => xScale(d['poverty'])
+        console.log(checkX)
 
 
         const circleGroup = svg.selectAll('circle')
             .data(health_poverty_data)
             .enter()
             .append('circle')
-            .attr('cx', d => xScale(d['poverty']))  
+            // .attr('cx', d => d['poverty'])
+            .attr('cx', d => xScale(parseFloat(d['poverty'])))
+            // .attr('cy', d => d['healthcare'])
             .attr('cy', d => yScale(d['healthcare']))
             .attr('r', 10)
-            .classed('moreInfo',true)
+            .classed('moreInfo', true)
         // .attr('fill', d => [d['abbr']]);
 
     })
