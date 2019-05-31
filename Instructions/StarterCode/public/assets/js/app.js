@@ -83,6 +83,9 @@ function UpdateBars(circleGroup, newXScale) {
     return;
 }
 
+// Tooltip HTML declaration
+const toolTip = d3.select('body').append('div')
+  .attr('class', 'd3-tip');
 
 d3.csv('/assets/data/data.csv')
     .then(function (health_poverty_data) {
@@ -156,13 +159,20 @@ d3.csv('/assets/data/data.csv')
             // const toolTip = d3.select('body').append('div')
             // .attr('class', 'tooltip');
         
-            circleGroup.on('mouseover', function(){
+            circleGroup.on('mouseover', function(d, i){
                 d3.select(this)
                 .transition()
                 .duration(300) 
                 .attr('r', 10)
                 .attr('fill', 'orange')
                 .attr('text', d => d['abbr'])
+                toolTip.style('display', 'block');
+
+                toolTip.html(
+                  `State abrv: <strong> ${d['abbr']}</strong>`
+                )
+                  .style('left', d3.event.pageX + 'px')
+                  .style('top', d3.event.pageY + 'px');
 
             })
 
@@ -171,6 +181,7 @@ d3.csv('/assets/data/data.csv')
                 .transition()
                 .attr('r', 8)
                 .attr('fill', 'green')
+                toolTip.style('display', 'none');
 
             })
 
